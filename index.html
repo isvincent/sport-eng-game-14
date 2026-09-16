@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>運動英語大冒險｜體育班遊戲式英文學習</title>
+<style>
+  :root{
+    --bg1:#fff7e6; --bg2:#ffe0f0;
+    --ink:#22303c; --ink2:#4a5b6a;
+    --card:#ffffff; --line:#ffe0b3;
+    --brand:#ff6b35; --brand2:#ff4d6d;
+    --blue:#2d9cdb; --green:#27ae60; --cyan:#17c0c0; --purple:#9b51e0;
+    --yellow:#ffd23f; --good:#1aa260; --bad:#e14b4b;
+    --z1:#ff7a45; --z2:#3d8bfd; --z3:#2ecc71; --z4:#12b5b5;
+    --radius:18px; --shadow:0 8px 22px rgba(60,40,10,.14);
+    --fz-base:19px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--ink); font-size:var(--fz-base); line-height:1.6;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    min-height:100vh; padding-bottom:40px;
+  }
+  h1,h2,h3{margin:.2em 0}
+  button{font-family:inherit; cursor:pointer; border:none; font-size:1rem}
+  .wrap{max-width:1180px; margin:0 auto; padding:14px}
+
+  /* Top bar */
+  header.top{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    background:linear-gradient(90deg,var(--brand),var(--brand2));
+    color:#fff; padding:14px 18px; border-radius:var(--radius);
+    box-shadow:var(--shadow); margin-bottom:14px;
+  }
+  header.top .logo{font-size:1.9rem; font-weight:900; letter-spacing:1px; text-shadow:0 2px 4px rgba(0,0,0,.2)}
+  header.top .logo small{display:block; font-size:.85rem; font-weight:500; opacity:.95}
+  header.top .spacer{flex:1}
+  .icon-btn{
+    background:rgba(255,255,255,.22); color:#fff; border-radius:12px;
+    padding:10px 14px; font-weight:700; min-height:46px; display:inline-flex;
+    align-items:center; gap:6px; transition:transform .12s, background .12s;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,.34)}
+  .icon-btn:active{transform:scale(.94)}
+  .rate-box{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);padding:8px 12px;border-radius:12px;font-size:.9rem;font-weight:700}
+  .rate-box input{accent-color:#fff}
+
+  /* Tabs */
+  nav.tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+  nav.tabs button{
+    flex:1 1 160px; min-height:56px; border-radius:16px; font-size:1.1rem; font-weight:800;
+    background:#fff; color:var(--ink2); box-shadow:var(--shadow); border:3px solid transparent;
+    transition:transform .12s, border-color .12s;
+  }
+  nav.tabs button:hover{transform:translateY(-2px)}
+  nav.tabs button.active{border-color:var(--brand); color:var(--brand); background:#fff6f0}
+  nav.tabs button .em{font-size:1.4rem; margin-right:6px}
+
+  section.panel{display:none; animation:fade .25s ease}
+  section.panel.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; margin-bottom:16px}
+  .card h2{font-size:1.4rem; display:flex; align-items:center; gap:8px}
+  .muted{color:var(--ink2)}
+  .pill{display:inline-block; padding:4px 12px; border-radius:999px; font-weight:800; font-size:.85rem; color:#fff}
+
+  /* ============ EXPLORE / GAME ============ */
+  .game-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:10px}
+  .missionbar{flex:1 1 260px; background:#fff3e0; border-radius:14px; padding:10px 14px; box-shadow:inset 0 0 0 2px var(--line)}
+  .missionbar .lbl{font-weight:800; font-size:.95rem}
+  .bar{height:16px; background:#ffe4c4; border-radius:999px; overflow:hidden; margin-top:6px}
+  .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--green),#7be495); border-radius:999px; transition:width .4s}
+
+  #stage{
+    position:relative; width:100%; aspect-ratio:16/10; border-radius:20px; overflow:hidden;
+    background:#eafff3; box-shadow:var(--shadow), inset 0 0 0 4px #fff; touch-action:none; user-select:none;
+    outline:none;
+  }
+  .zone{position:absolute; width:50%; height:50%; display:flex; align-items:flex-start; justify-content:flex-start}
+  .zone .zlabel{margin:8px 10px; background:rgba(255,255,255,.85); padding:4px 12px; border-radius:999px; font-weight:900; font-size:clamp(.7rem,1.6vw,1rem); box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  #zoneA{left:0; top:0; background:radial-gradient(circle at 30% 30%,#ffd9c2,#ffb591)}
+  #zoneB{right:0; top:0; background:radial-gradient(circle at 70% 30%,#cfe4ff,#9ec7ff)}
+  #zoneC{left:0; bottom:0; background:radial-gradient(circle at 30% 70%,#c9f7d8,#9be7b4)}
+  #zoneD{right:0; bottom:0; background:radial-gradient(circle at 70% 70%,#bff4f4,#8fe6e6)}
+  .token{
+    position:absolute; transform:translate(-50%,-50%); z-index:3;
+    width:clamp(46px,7vw,74px); height:clamp(46px,7vw,74px); border-radius:16px;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-weight:900; color:#fff; font-size:clamp(.62rem,1.5vw,.9rem); line-height:1.05;
+    box-shadow:0 4px 10px rgba(0,0,0,.22); cursor:default; padding:3px;
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-64%)}}
+  .token.done{filter:grayscale(.2) brightness(1.05); opacity:.55; animation:none}
+  .token.done::after{content:"✓"; position:absolute; right:-4px; top:-6px; background:var(--good); color:#fff; border-radius:50%; width:22px; height:22px; font-size:.85rem; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 4px rgba(0,0,0,.2)}
+  #player{
+    position:absolute; transform:translate(-50%,-50%); z-index:5;
+    width:clamp(40px,6vw,60px); height:clamp(40px,6vw,60px); border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff,var(--yellow)); border:4px solid var(--brand);
+    display:flex; align-items:center; justify-content:center; font-size:clamp(1.3rem,3.2vw,2rem);
+    box-shadow:0 6px 14px rgba(0,0,0,.28); transition:transform .04s;
+  }
+
+  /* D-pad + controls */
+  .controls{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:12px}
+  .dpad{display:grid; grid-template-columns:repeat(3,64px); grid-template-rows:repeat(3,64px); gap:8px; touch-action:none}
+  .dpad button{
+    background:linear-gradient(180deg,#fff,#ffe9d6); border:3px solid var(--brand); color:var(--brand);
+    border-radius:16px; font-size:1.8rem; font-weight:900; box-shadow:var(--shadow); touch-action:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .dpad button:active{background:var(--brand); color:#fff; transform:scale(.95)}
+  .dpad .up{grid-column:2; grid-row:1}
+  .dpad .left{grid-column:1; grid-row:2}
+  .dpad .right{grid-column:3; grid-row:2}
+  .dpad .down{grid-column:2; grid-row:3}
+  .dpad .mid{grid-column:2; grid-row:2; background:#fff3e6; border-style:dashed; color:var(--ink2); font-size:.8rem}
+  .hint-key{font-size:.9rem; color:var(--ink2); max-width:340px}
+
+  /* Buttons */
+  .btn{background:var(--brand); color:#fff; border-radius:14px; padding:12px 20px; font-weight:800; font-size:1.05rem; min-height:50px; box-shadow:var(--shadow); transition:transform .12s, filter .12s}
+  .btn:hover{filter:brightness(1.05)} .btn:active{transform:scale(.96)}
+  .btn.ghost{background:#fff; color:var(--brand); box-shadow:inset 0 0 0 3px var(--brand)}
+  .btn.blue{background:var(--blue)} .btn.green{background:var(--green)} .btn.purple{background:var(--purple)} .btn.gray{background:#7a8794}
+  .btn.sm{padding:8px 14px; font-size:.95rem; min-height:42px}
+  .speak{background:var(--blue); color:#fff; border-radius:50%; width:46px; height:46px; font-size:1.3rem; display:inline-flex; align-items:center; justify-content:center; box-shadow:var(--shadow); flex:0 0 auto}
+  .speak:active{transform:scale(.9)}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .grid-opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-top:12px}
+  .opt{background:#fff; border:3px solid var(--line); border-radius:14px; padding:16px; font-size:1.15rem; font-weight:700; text-align:left; transition:transform .12s, border-color .12s; min-height:60px}
+  .opt:hover{transform:translateY(-2px); border-color:var(--brand)}
+  .opt.correct{border-color:var(--good); background:#eafff2}
+  .opt.wrong{border-color:var(--bad); background:#ffecec}
+  .opt:disabled{cursor:default}
+
+  /* Modal word card */
+  .modal-bg{position:fixed; inset:0; background:rgba(30,20,10,.5); display:none; align-items:center; justify-content:center; z-index:50; padding:16px}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff; border-radius:22px; max-width:520px; width:100%; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,.3); text-align:center; animation:pop .25s ease}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .big-en{font-size:2.6rem; font-weight:900; color:var(--brand); word-break:break-word}
+  .modal .kk{color:var(--ink2); font-size:1.15rem; letter-spacing:.5px}
+  .modal .zh{font-size:1.5rem; font-weight:800; margin:6px 0}
+  .modal .ex{background:#fff7ee; border-radius:14px; padding:14px; margin:14px 0; text-align:left; font-size:1.1rem}
+  .modal .ex .en{font-weight:700}
+  .modal .ex .cn{color:var(--ink2); font-size:.98rem; margin-top:4px}
+  .modal .tip{background:#eef7ff; border-left:6px solid var(--blue); border-radius:10px; padding:10px 14px; text-align:left; font-size:.98rem; margin-top:6px}
+
+  /* stats */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px}
+  .stat{background:linear-gradient(135deg,#fff,#fff3e6); border-radius:16px; padding:16px; text-align:center; box-shadow:var(--shadow)}
+  .stat .n{font-size:2rem; font-weight:900; color:var(--brand)}
+  .stat .l{font-size:.92rem; color:var(--ink2); font-weight:700}
+  .log{max-height:230px; overflow:auto; margin-top:8px}
+  .log div{padding:8px 10px; border-bottom:1px dashed var(--line); font-size:.95rem}
+
+  .ai-bubble{background:#f2f8ff; border-radius:16px; padding:16px; margin-top:12px; border:2px solid #d7e9ff; white-space:pre-wrap; font-size:1.05rem; line-height:1.7}
+  .ai-bubble .en-line{color:var(--blue); font-weight:800}
+  textarea, select, input[type=text]{width:100%; font-family:inherit; font-size:1.05rem; padding:12px; border-radius:12px; border:3px solid var(--line); background:#fffdf8}
+  select{min-height:50px}
+  .qbtns{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0}
+  .letter-bank{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:14px 0}
+  .letter-bank button{width:54px; height:54px; font-size:1.5rem; font-weight:900; border-radius:12px; background:#fff3e6; border:3px solid var(--brand); color:var(--brand)}
+  .letter-bank button:disabled{opacity:.35}
+  .spell-slot{min-height:56px; letter-spacing:6px; font-size:1.8rem; font-weight:900; text-align:center; color:var(--brand); background:#fffdf8; border:3px dashed var(--line); border-radius:12px; padding:8px}
+
+  .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(30px); background:var(--ink); color:#fff; padding:12px 22px; border-radius:14px; font-weight:800; opacity:0; transition:.3s; z-index:80; box-shadow:0 8px 20px rgba(0,0,0,.3)}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  footer{text-align:center; color:var(--ink2); font-size:.85rem; margin-top:20px}
+
+  @media (max-width:560px){
+    :root{--fz-base:17px}
+    header.top .logo{font-size:1.5rem}
+    .dpad{grid-template-columns:repeat(3,56px); grid-template-rows:repeat(3,56px)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="logo">🏆 運動英語大冒險<small>體育班遊戲式英文學習 · Sports English Adventure</small></div>
+    <div class="spacer"></div>
+    <div class="rate-box" title="調整發音速度">🐢 語速
+      <input type="range" id="rate" min="0.6" max="1.1" step="0.05" value="0.85" style="width:90px">
+    </div>
+    <button class="icon-btn" id="muteBtn" aria-label="開關音效">🔊 音效</button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="active" data-tab="explore"><span class="em">🗺️</span>探索學單字</button>
+    <button data-tab="practice"><span class="em">🎮</span>遊戲練習</button>
+    <button data-tab="quiz"><span class="em">📝</span>闖關測驗</button>
+    <button data-tab="record"><span class="em">📊</span>學習歷程</button>
+    <button data-tab="ai"><span class="em">🤖</span>AI 英文教練</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel show" id="panel-explore">
+    <div class="card">
+      <div class="game-head">
+        <h2 style="margin:0">🕹️ 運動場探險：走到單字方塊上就能學會它！</h2>
+        <div class="missionbar">
+          <div class="lbl">🎯 收集進度 <span id="collectN">0</span> / <span id="collectTotal">0</span></div>
+          <div class="bar"><i id="collectBar"></i></div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:0">用下方方向鍵（或鍵盤 <b>方向鍵 / WASD</b>）操控黃色小人 <b>🏃</b>，走過場上的彩色單字方塊，就會跳出單字卡並自動發音。四個場地：<b style="color:var(--z1)">田徑場</b>、<b style="color:var(--z2)">球場</b>、<b style="color:var(--z3)">體適能館</b>、<b style="color:var(--z4)">游泳池</b>。</p>
+
+      <div id="stage" tabindex="0" aria-label="運動場遊戲區">
+        <div class="zone" id="zoneA"><span class="zlabel">🏃 田徑場 Track</span></div>
+        <div class="zone" id="zoneB"><span class="zlabel">⚽ 球場 Ball Games</span></div>
+        <div class="zone" id="zoneC"><span class="zlabel">💪 體適能館 Fitness</span></div>
+        <div class="zone" id="zoneD"><span class="zlabel">🏊 游泳池 Swimming</span></div>
+        <div id="player">🏃</div>
+      </div>
+
+      <div class="controls">
+        <div class="dpad" aria-label="方向控制">
+          <button class="up" data-dir="up" aria-label="上">▲</button>
+          <button class="left" data-dir="left" aria-label="左">◀</button>
+          <button class="mid" id="recenter" aria-label="回到中央">中央</button>
+          <button class="right" data-dir="right" aria-label="右">▶</button>
+          <button class="down" data-dir="down" aria-label="下">▼</button>
+        </div>
+        <div class="hint-key">
+          💡 提示：走到方塊會亮起 ✓。全部收集完成會有慶祝音效！<br>
+          在大觸屏上，全班可輪流上台操控探索。
+        </div>
+        <div class="row">
+          <button class="btn ghost sm" id="reviewCollected">📖 複習已學單字</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section class="panel" id="panel-practice">
+    <div class="card">
+      <h2>🎮 遊戲練習｜反覆演練不怕忘</h2>
+      <p class="muted">選一種模式，系統會從你<strong>已探索過的單字</strong>出題（先去「探索學單字」收集吧）。答錯會告訴你為什麼，隨時可再練。</p>
+      <div class="row">
+        <button class="btn blue" data-pmode="match">🔤 中英配對</button>
+        <button class="btn green" data-pmode="listen">👂 聽音選字</button>
+        <button class="btn purple" data-pmode="spell">✍️ 拼字挑戰</button>
+      </div>
+      <div id="practiceArea" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel" id="panel-quiz">
+    <div class="card">
+      <h2>📝 闖關測驗｜檢測學習成效</h2>
+      <div id="quizIntro">
+        <p class="muted">共 10 題混合題型（字義、聽力、例句填空、是非）。作答後可看詳解，並記錄你的最佳成績。</p>
+        <button class="btn" id="startQuiz">🚀 開始測驗</button>
+      </div>
+      <div id="quizArea" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- ============ RECORD ============ -->
+  <section class="panel" id="panel-record">
+    <div class="card">
+      <h2>📊 學習歷程</h2>
+      <div class="stats" id="statBox"></div>
+      <h3 style="margin-top:18px">🕒 最近活動</h3>
+      <div class="log" id="activityLog"></div>
+    </div>
+    <div class="card">
+      <h2>📥 下載與管理</h2>
+      <p class="muted">把學習內容帶回家複習，或交給老師存檔。</p>
+      <div class="row">
+        <button class="btn green" id="dlWords">📗 下載單字＋例句</button>
+        <button class="btn blue" id="dlAi">🤖 下載 AI 教練紀錄</button>
+        <button class="btn purple" id="dlProgress">📈 下載學習歷程</button>
+        <button class="btn gray" id="resetAll">♻️ 清除所有紀錄</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AI COACH ============ -->
+  <section class="panel" id="panel-ai">
+    <div class="card">
+      <h2>🤖 AI 英文教練</h2>
+      <p class="muted">選一個單字，點按鈕或直接輸入問題，教練會給你發音、字義、例句與記憶小撇步。內容可存檔下載。</p>
+      <div class="row" style="margin-bottom:10px">
+        <label style="font-weight:800">選單字：</label>
+        <select id="aiWord" style="flex:1; max-width:320px"></select>
+        <button class="speak" id="aiSpeakWord" aria-label="唸這個單字">🔊</button>
+      </div>
+      <div class="qbtns">
+        <button class="btn sm ghost" data-ask="meaning">這是什麼意思？</button>
+        <button class="btn sm ghost" data-ask="pron">怎麼發音？</button>
+        <button class="btn sm ghost" data-ask="example">給我例句</button>
+        <button class="btn sm ghost" data-ask="memory">怎麼記？</button>
+        <button class="btn sm ghost" data-ask="use">運動時怎麼用？</button>
+      </div>
+      <div class="row">
+        <input type="text" id="aiInput" placeholder="也可以直接打字問，例如：run 怎麼造句？" style="flex:1">
+        <button class="btn blue" id="aiSend">問教練</button>
+      </div>
+      <div class="ai-bubble" id="aiReply" style="display:none"></div>
+      <div class="row" id="aiActions" style="display:none; margin-top:10px">
+        <button class="btn sm blue" id="aiSpeakReply">🔊 唸出回覆</button>
+        <button class="btn sm green" id="aiSave">💾 存進紀錄</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    運動英語大冒險 · 單一 HTML 檔 · 可離線使用 · 資料只存在本機瀏覽器<br>
+    為體育班設計｜發音採用瀏覽器語音合成，例句與教練內容內建於檔案中
+  </footer>
+</div>
+
+<!-- Word modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalCard"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* =================== DATA =================== */
+const WORDS = [
+  // zone A 田徑場
+  {en:"run", kk:"/rʌn/", zh:"跑步", zone:"A", ex:"Athletes run around the track every morning.", exZh:"運動員每天早上繞著跑道跑步。", tip:"最基礎的動作字，只有三個字母，體育班每天都在 run！"},
+  {en:"jump", kk:"/dʒʌmp/", zh:"跳躍", zone:"A", ex:"She can jump over the high bar easily.", exZh:"她能輕鬆跳過高欄。", tip:"j 開頭，想像起跳瞬間的爆發力。"},
+  {en:"sprint", kk:"/sprɪnt/", zh:"短跑衝刺", zone:"A", ex:"He sprints the last 100 meters to win.", exZh:"他在最後一百公尺全力衝刺獲勝。", tip:"sp 開頭有「衝」的感覺，比 run 更快更用力。"},
+  {en:"relay", kk:"/ˈriˌle/", zh:"接力賽", zone:"A", ex:"Our relay team passed the baton perfectly.", exZh:"我們的接力隊傳棒非常順暢。", tip:"re＋lay，接力就是一棒接一棒地把棒子放下交給下一位。"},
+  {en:"hurdle", kk:"/ˈhɝdl/", zh:"跨欄", zone:"A", ex:"The runner cleared every hurdle without slowing down.", exZh:"選手跨過每個欄架都沒有減速。", tip:"想成 hurt＋le，跨欄若沒跨好會 hurt（痛）。"},
+  {en:"finish", kk:"/ˈfɪnɪʃ/", zh:"終點；完成", zone:"A", ex:"They cheered as she crossed the finish line.", exZh:"當她衝過終點線時大家歡呼。", tip:"finish line 就是終點線，衝過去比賽就完成了。"},
+  {en:"record", kk:"/ˈrɛkɚd/", zh:"紀錄", zone:"A", ex:"He broke the school record in the long jump.", exZh:"他打破了跳遠的校紀錄。", tip:"break the record＝破紀錄，是運動場最帥的一句話。"},
+  {en:"warm-up", kk:"/ˈwɔrm ʌp/", zh:"熱身", zone:"A", ex:"Always do a warm-up before you run.", exZh:"跑步前一定要先熱身。", tip:"warm（暖）＋up，讓身體熱起來、避免受傷。"},
+  // zone B 球場
+  {en:"pass", kk:"/pæs/", zh:"傳球", zone:"B", ex:"Pass the ball to your teammate quickly.", exZh:"快把球傳給你的隊友。", tip:"兩個 s，把球「傳」出去給別人。"},
+  {en:"shoot", kk:"/ʃut/", zh:"射門；投籃", zone:"B", ex:"He shot the ball and scored a goal.", exZh:"他射門得分了。", tip:"oo 兩個 o，像球飛向球門的軌跡。"},
+  {en:"dribble", kk:"/ˈdrɪbl/", zh:"運球", zone:"B", ex:"The player dribbled past two defenders.", exZh:"球員運球過了兩名防守者。", tip:"想成 dr＋bubble，運球像一顆顆彈跳的泡泡。"},
+  {en:"goal", kk:"/ɡol/", zh:"球門；得分", zone:"B", ex:"The crowd cheered when he scored a goal.", exZh:"他進球時全場歡呼。", tip:"go＋al，往前 go 就是為了 goal。"},
+  {en:"score", kk:"/skɔr/", zh:"得分；比分", zone:"B", ex:"What is the score of the game now?", exZh:"現在比賽比數是多少？", tip:"計分板上的數字就是 score。"},
+  {en:"team", kk:"/tim/", zh:"隊伍", zone:"B", ex:"Our team practices together after school.", exZh:"我們這隊放學後一起練習。", tip:"team 裡沒有 I，強調團隊合作。"},
+  {en:"defend", kk:"/dɪˈfɛnd/", zh:"防守", zone:"B", ex:"Good players know how to defend well.", exZh:"好球員懂得如何做好防守。", tip:"de＋fend，把對手擋在外面。"},
+  {en:"referee", kk:"/ˌrɛfəˈri/", zh:"裁判", zone:"B", ex:"The referee blew the whistle to stop the game.", exZh:"裁判吹哨中止比賽。", tip:"三個 e 就像三聲哨音，ref 是它的暱稱。"},
+  // zone C 體適能館
+  {en:"stretch", kk:"/strɛtʃ/", zh:"伸展", zone:"C", ex:"Stretch your legs before every workout.", exZh:"每次訓練前伸展你的雙腿。", tip:"字很長，就像肌肉被拉長的樣子。"},
+  {en:"muscle", kk:"/ˈmʌsl/", zh:"肌肉", zone:"C", ex:"Weight training builds strong muscles.", exZh:"重量訓練能練出強壯的肌肉。", tip:"有個不發音的 c，肌肉裡藏著看不見的力量。"},
+  {en:"push-up", kk:"/ˈpʊʃ ʌp/", zh:"伏地挺身", zone:"C", ex:"He can do fifty push-ups in a row.", exZh:"他能連續做五十下伏地挺身。", tip:"push（推）＋up，把身體推起來。"},
+  {en:"workout", kk:"/ˈwɝkˌaʊt/", zh:"訓練；健身", zone:"C", ex:"My workout takes about one hour.", exZh:"我的訓練大約一小時。", tip:"work（工作）＋out，讓身體努力工作。"},
+  {en:"strength", kk:"/strɛŋθ/", zh:"力量", zone:"C", ex:"Core strength helps you run faster.", exZh:"核心力量能幫你跑得更快。", tip:"由 strong 變來的名詞，代表強壯的力量。"},
+  {en:"balance", kk:"/ˈbæləns/", zh:"平衡", zone:"C", ex:"Good balance keeps you from falling.", exZh:"良好的平衡感能避免跌倒。", tip:"想像球（ball）在頭上保持 balance 平衡。"},
+  {en:"energy", kk:"/ˈɛnɚdʒi/", zh:"能量；體力", zone:"C", ex:"Eat well to keep your energy up.", exZh:"吃得好才能維持體力。", tip:"充飽電（energy）才有體力訓練。"},
+  {en:"coach", kk:"/kotʃ/", zh:"教練", zone:"C", ex:"The coach taught us a new drill today.", exZh:"教練今天教我們一個新的訓練動作。", tip:"教練帶你搭上進步的馬車（coach 也有馬車的意思）。"},
+  // zone D 游泳池
+  {en:"swim", kk:"/swɪm/", zh:"游泳", zone:"D", ex:"We swim two hours every Friday.", exZh:"我們每週五游泳兩小時。", tip:"sw 開頭有滑水前進的感覺。"},
+  {en:"dive", kk:"/daɪv/", zh:"跳水；潛入", zone:"D", ex:"She dived into the pool without a splash.", exZh:"她入水幾乎沒有水花。", tip:"di＋ve，頭朝下切進水裡。"},
+  {en:"lap", kk:"/læp/", zh:"一趟；一圈", zone:"D", ex:"He swam ten laps this morning.", exZh:"他今天早上游了十趟。", tip:"短短三個字母，游一趟就是一 lap。"},
+  {en:"freestyle", kk:"/ˈfriˌstaɪl/", zh:"自由式", zone:"D", ex:"Freestyle is the fastest swimming style.", exZh:"自由式是最快的泳姿。", tip:"free（自由）＋style（式），最自由的泳姿。"},
+  {en:"goggles", kk:"/ˈɡɑɡlz/", zh:"泳鏡", zone:"D", ex:"Wear goggles to protect your eyes.", exZh:"戴上泳鏡保護眼睛。", tip:"兩個 g 就像兩片鏡片。"},
+  {en:"breathe", kk:"/brið/", zh:"呼吸", zone:"D", ex:"Remember to breathe on every third stroke.", exZh:"記得每划三下換一次氣。", tip:"動詞 breathe 比名詞 breath 多一個 e，別忘了呼吸。"},
+  {en:"speed", kk:"/spid/", zh:"速度", zone:"D", ex:"Her speed in the water is amazing.", exZh:"她在水中的速度很驚人。", tip:"ee 兩個 e，速度快到出現殘影。"},
+  {en:"victory", kk:"/ˈvɪktəri/", zh:"勝利", zone:"D", ex:"The whole team celebrated the victory.", exZh:"全隊一起慶祝勝利。", tip:"vic 開頭，想成 V 字勝利手勢。"},
+];
+const ZONE_META = {
+  A:{color:"var(--z1)", css:"#ff7a45"}, B:{color:"var(--z2)", css:"#3d8bfd"},
+  C:{color:"var(--z3)", css:"#2ecc71"}, D:{color:"var(--z4)", css:"#12b5b5"}
+};
+const byEn = Object.fromEntries(WORDS.map(w=>[w.en,w]));
+
+/* =================== STATE =================== */
+const KEY="sportsEngGame.v1";
+const DEFAULT={version:1, collected:[], practice:{attempts:0,correct:0}, quiz:{bestScore:0,attempts:[]}, aiLog:[], activity:[], lastActiveAt:null};
+let state = loadState();
+function loadState(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(!raw) return structuredClone(DEFAULT);
+    const p=JSON.parse(raw);
+    if(!p || typeof p!=="object") return structuredClone(DEFAULT);
+    return Object.assign(structuredClone(DEFAULT), p);
+  }catch(e){ return structuredClone(DEFAULT); }
+}
+function save(){ try{ state.lastActiveAt=Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function logAct(txt){
+  state.activity.unshift({t:Date.now(), txt});
+  state.activity=state.activity.slice(0,30);
+  save();
+}
+
+/* =================== SOUND (Web Audio, no files) =================== */
+let muted=false, actx=null;
+function AC(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){actx=null;} } return actx; }
+function beep(freq,dur,type="sine",vol=0.15,delay=0){
+  if(muted) return; const c=AC(); if(!c) return;
+  const t=c.currentTime+delay; const o=c.createOscillator(), g=c.createGain();
+  o.type=type; o.frequency.value=freq; o.connect(g); g.connect(c.destination);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.start(t); o.stop(t+dur+0.02);
+}
+const SFX={
+  click:()=>beep(520,0.08,"triangle",0.1),
+  collect:()=>{beep(660,0.1,"sine",0.16);beep(880,0.12,"sine",0.16,0.09);},
+  correct:()=>{beep(700,0.1,"sine",0.16);beep(1046,0.14,"sine",0.16,0.1);},
+  wrong:()=>{beep(200,0.22,"sawtooth",0.12);},
+  win:()=>{[523,659,784,1046].forEach((f,i)=>beep(f,0.18,"triangle",0.17,i*0.12));}
+};
+
+/* =================== SPEECH =================== */
+let speechRate=0.85, enVoice=null;
+function pickVoice(){
+  if(!("speechSynthesis" in window)) return;
+  const vs=speechSynthesis.getVoices();
+  enVoice = vs.find(v=>/en[-_]US/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function speak(text, lang="en-US"){
+  if(!("speechSynthesis" in window)){ toast("此瀏覽器不支援語音，請改用 Chrome 或 Edge"); return; }
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=lang; u.rate=speechRate; u.pitch=1;
+    if(lang==="en-US" && enVoice) u.voice=enVoice;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* =================== TABS =================== */
+document.querySelectorAll("nav.tabs button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    SFX.click();
+    document.querySelectorAll("nav.tabs button").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll("section.panel").forEach(x=>x.classList.remove("show"));
+    b.classList.add("active");
+    document.getElementById("panel-"+b.dataset.tab).classList.add("show");
+    if(b.dataset.tab==="record") renderRecord();
+    if(b.dataset.tab==="explore") setTimeout(placeTokens,50);
+  });
+});
+
+/* mute + rate */
+document.getElementById("muteBtn").addEventListener("click",e=>{
+  muted=!muted; e.currentTarget.textContent = muted?"🔇 靜音":"🔊 音效"; if(!muted) SFX.click();
+});
+document.getElementById("rate").addEventListener("input",e=>{ speechRate=parseFloat(e.target.value); });
+
+/* toast */
+let toastT=null;
+function toast(msg){
+  const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1800);
+}
+
+/* =================== EXPLORE GAME =================== */
+const stage=document.getElementById("stage");
+const playerEl=document.getElementById("player");
+// player position in % (0-100)
+let px=50, py=50;
+const SPEED=0.9;         // % per frame
+const TOKEN_R=7;         // collision radius in %
+let dir={up:false,down:false,left:false,right:false};
+let tokenEls=[];
+
+// spawn positions inside each quadrant (percent of whole stage)
+function zoneSlots(zone){
+  // 4x2 grid of slots per quadrant
+  const xs = zone==="A"||zone==="C" ? [10,22,34,44] : [56,66,78,90];
+  const topY = zone==="A"||zone==="B" ? [16,38] : [62,84];
+  const slots=[];
+  topY.forEach(y=>xs.forEach(x=>slots.push({x,y})));
+  return slots;
+}
+function placeTokens(){
+  tokenEls.forEach(t=>t.remove()); tokenEls=[];
+  ["A","B","C","D"].forEach(z=>{
+    const list=WORDS.filter(w=>w.zone===z);
+    const slots=zoneSlots(z);
+    list.forEach((w,i)=>{
+      const s=slots[i]||slots[slots.length-1];
+      const el=document.createElement("div");
+      el.className="token"+(state.collected.includes(w.en)?" done":"");
+      el.style.left=s.x+"%"; el.style.top=s.y+"%";
+      el.style.background=ZONE_META[z].css;
+      el.textContent=w.en;
+      el.dataset.en=w.en; el.dataset.x=s.x; el.dataset.y=s.y;
+      stage.appendChild(el); tokenEls.push(el);
+    });
+  });
+  updateCollect();
+}
+function updateCollect(){
+  const n=state.collected.length, tot=WORDS.length;
+  document.getElementById("collectN").textContent=n;
+  document.getElementById("collectTotal").textContent=tot;
+  document.getElementById("collectBar").style.width=(n/tot*100)+"%";
+}
+function gameLoop(){
+  let dx=0,dy=0;
+  if(dir.left)dx-=1; if(dir.right)dx+=1; if(dir.up)dy-=1; if(dir.down)dy+=1;
+  if(dx||dy){
+    const len=Math.hypot(dx,dy)||1;
+    px=Math.max(4,Math.min(96, px+dx/len*SPEED));
+    py=Math.max(6,Math.min(95, py+dy/len*SPEED));
+    playerEl.style.left=px+"%"; playerEl.style.top=py+"%";
+    playerEl.textContent = dx<0?"🏃":(dx>0?"🏃":"🏃");
+    checkCollisions();
+  }
+  requestAnimationFrame(gameLoop);
+}
+function checkCollisions(){
+  tokenEls.forEach(el=>{
+    if(el.classList.contains("done")) return;
+    const tx=parseFloat(el.dataset.x), ty=parseFloat(el.dataset.y);
+    if(Math.hypot(px-tx, py-ty) < TOKEN_R){ collect(el); }
+  });
+}
+function collect(el){
+  const en=el.dataset.en;
+  el.classList.add("done");
+  if(!state.collected.includes(en)){
+    state.collected.push(en);
+    logAct("在探索中學會單字：<b>"+en+"</b>（"+byEn[en].zh+"）");
+    save(); updateCollect();
+  }
+  SFX.collect();
+  openWordCard(en);
+  if(state.collected.length===WORDS.length){ setTimeout(()=>{ SFX.win(); toast("🎉 全部單字收集完成！你是運動英語冠軍！"); }, 400); }
+}
+
+/* directional controls: pointer + keyboard */
+document.querySelectorAll(".dpad button[data-dir]").forEach(btn=>{
+  const d=btn.dataset.dir;
+  const on=e=>{ e.preventDefault(); dir[d]=true; if(e.pointerId!=null&&btn.setPointerCapture){try{btn.setPointerCapture(e.pointerId);}catch(_){}} };
+  const off=e=>{ dir[d]=false; };
+  btn.addEventListener("pointerdown",on);
+  btn.addEventListener("pointerup",off);
+  btn.addEventListener("pointercancel",off);
+  btn.addEventListener("lostpointercapture",off);
+  btn.addEventListener("pointerleave",off);
+});
+const KEYMAP={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",s:"down",a:"left",d:"right",W:"up",S:"down",A:"left",D:"right"};
+window.addEventListener("keydown",e=>{
+  if(KEYMAP[e.key] && document.getElementById("panel-explore").classList.contains("show")){
+    e.preventDefault(); dir[KEYMAP[e.key]]=true;
+  }
+});
+window.addEventListener("keyup",e=>{ if(KEYMAP[e.key]) dir[KEYMAP[e.key]]=false; });
+window.addEventListener("blur",()=>{dir={up:false,down:false,left:false,right:false};});
+document.addEventListener("visibilitychange",()=>{dir={up:false,down:false,left:false,right:false};});
+document.getElementById("recenter").addEventListener("click",()=>{px=50;py=50;playerEl.style.left="50%";playerEl.style.top="50%";SFX.click();});
+
+/* word modal */
+const modalBg=document.getElementById("modalBg"), modalCard=document.getElementById("modalCard");
+function openWordCard(en){
+  const w=byEn[en];
+  modalCard.innerHTML=
+    '<div class="pill" style="background:'+ZONE_META[w.zone].css+'">'+zoneName(w.zone)+'</div>'+
+    '<div class="big-en">'+w.en+'</div>'+
+    '<div class="kk">'+w.kk+'</div>'+
+    '<div class="zh">'+w.zh+'</div>'+
+    '<div class="row" style="justify-content:center">'+
+      '<button class="btn blue sm" data-say="'+esc(w.en)+'">🔊 唸單字</button>'+
+      '<button class="btn green sm" data-say="'+esc(w.ex)+'">🔊 唸例句</button>'+
+    '</div>'+
+    '<div class="ex"><div class="en">"'+w.ex+'"</div><div class="cn">'+w.exZh+'</div></div>'+
+    '<div class="tip">💡 記憶小撇步：'+w.tip+'</div>'+
+    '<button class="btn" style="margin-top:14px;width:100%" id="closeModal">繼續探索 ▶</button>';
+  modalBg.classList.add("show");
+  setTimeout(()=>speak(w.en),250);
+  modalCard.querySelectorAll("[data-say]").forEach(b=>b.addEventListener("click",()=>{SFX.click();speak(b.dataset.say);}));
+  document.getElementById("closeModal").addEventListener("click",closeModal);
+}
+function closeModal(){ modalBg.classList.remove("show"); }
+modalBg.addEventListener("click",e=>{ if(e.target===modalBg) closeModal(); });
+function zoneName(z){return {A:"🏃 田徑場",B:"⚽ 球場",C:"💪 體適能館",D:"🏊 游泳池"}[z];}
+
+document.getElementById("reviewCollected").addEventListener("click",()=>{
+  SFX.click();
+  if(state.collected.length===0){ toast("還沒有已學單字，先去探索收集吧！"); return; }
+  const en=state.collected[Math.floor(Math.random()*state.collected.length)];
+  openWordCard(en);
+});
+
+/* =================== PRACTICE =================== */
+const pArea=document.getElementById("practiceArea");
+let curPMode=null;
+document.querySelectorAll("[data-pmode]").forEach(b=>b.addEventListener("click",()=>{SFX.click();curPMode=b.dataset.pmode;nextPractice();}));
+function learned(){ return WORDS.filter(w=>state.collected.includes(w.en)); }
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function sample(arr,n,exclude){ const pool=arr.filter(x=>x!==exclude); const out=[]; while(out.length<n&&pool.length){ out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); } return out; }
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function nextPractice(){
+  const pool=learned();
+  if(pool.length<4){ pArea.innerHTML='<div class="card" style="background:#fff7ee;margin:0"><b>先去「探索學單字」收集至少 4 個單字</b>，才能開始練習喔！目前已學 '+pool.length+' 個。</div>'; return; }
+  if(curPMode==="match") pracMatch(pool);
+  else if(curPMode==="listen") pracListen(pool);
+  else pracSpell(pool);
+}
+function pracHeader(txt){
+  return '<div class="row" style="justify-content:space-between"><h3 style="margin:0">'+txt+'</h3>'+
+    '<span class="muted">練習正確率 '+accStr()+'</span></div>';
+}
+function accStr(){ const p=state.practice; return p.attempts? Math.round(p.correct/p.attempts*100)+"%（"+p.correct+"/"+p.attempts+"）":"—"; }
+function recordPractice(ok){ state.practice.attempts++; if(ok)state.practice.correct++; save(); }
+
+function pracMatch(pool){
+  const w=rand(pool); const opts=shuffle([w, ...sample(pool,3,w)]);
+  pArea.innerHTML=pracHeader("🔤 中英配對")+
+    '<div class="card" style="margin:10px 0 0;background:#fff"><div style="text-align:center">'+
+    '<div style="font-size:2.4rem;font-weight:900;color:var(--brand)">'+w.en+'</div>'+
+    '<div class="kk muted">'+w.kk+'</div>'+
+    '<button class="speak" style="margin-top:8px" data-say="'+esc(w.en)+'">🔊</button></div>'+
+    '<p class="muted" style="text-align:center">選出正確的中文意思：</p>'+
+    '<div class="grid-opts" id="popts"></div></div>';
+  const box=document.getElementById("popts");
+  opts.forEach(o=>{
+    const b=document.createElement("button"); b.className="opt"; b.textContent=o.zh;
+    b.addEventListener("click",()=>judgeMC(box,b,o.en===w.en,w,"它的意思是「"+w.zh+"」。"));
+    box.appendChild(b);
+  });
+  bindSay(pArea);
+}
+function pracListen(pool){
+  const w=rand(pool); const opts=shuffle([w, ...sample(pool,3,w)]);
+  pArea.innerHTML=pracHeader("👂 聽音選字")+
+    '<div class="card" style="margin:10px 0 0;background:#fff"><div style="text-align:center">'+
+    '<button class="btn blue" data-say="'+esc(w.en)+'">🔊 播放單字（可重聽）</button>'+
+    '<p class="muted">聽聽看，選出你聽到的單字：</p></div><div class="grid-opts" id="popts"></div></div>';
+  const box=document.getElementById("popts");
+  opts.forEach(o=>{
+    const b=document.createElement("button"); b.className="opt"; b.style.textAlign="center";
+    b.innerHTML='<b>'+o.en+'</b><br><span class="muted" style="font-size:.9rem">'+o.zh+'</span>';
+    b.addEventListener("click",()=>judgeMC(box,b,o.en===w.en,w,"你聽到的是 "+w.en+"（"+w.zh+"）。"));
+    box.appendChild(b);
+  });
+  bindSay(pArea);
+  setTimeout(()=>speak(w.en),300);
+}
+function pracSpell(pool){
+  const w=rand(pool);
+  const letters=shuffle(w.en.replace(/[^a-zA-Z]/g,"").split(""));
+  let built="";
+  pArea.innerHTML=pracHeader("✍️ 拼字挑戰")+
+    '<div class="card" style="margin:10px 0 0;background:#fff;text-align:center">'+
+    '<div style="font-size:1.5rem;font-weight:800">'+w.zh+'</div>'+
+    '<div class="kk muted">'+w.kk+' <button class="speak" style="width:38px;height:38px;font-size:1rem" data-say="'+esc(w.en)+'">🔊</button></div>'+
+    '<div class="spell-slot" id="slot">＿</div>'+
+    '<div class="letter-bank" id="bank"></div>'+
+    '<div class="row" style="justify-content:center">'+
+      '<button class="btn gray sm" id="undo">⌫ 退一格</button>'+
+      '<button class="btn green sm" id="check">✅ 檢查</button>'+
+      '<button class="btn ghost sm" id="skip">下一題 ▶</button>'+
+    '</div><div id="spellFb" style="margin-top:8px;font-weight:800"></div></div>';
+  const slot=document.getElementById("slot"), bank=document.getElementById("bank");
+  const btns=[];
+  letters.forEach((ch,i)=>{ const b=document.createElement("button"); b.textContent=ch; b.dataset.i=i;
+    b.addEventListener("click",()=>{ if(b.disabled)return; built+=ch; b.disabled=true; render(); }); bank.appendChild(b); btns.push(b); });
+  function render(){ slot.textContent=built||"＿"; }
+  document.getElementById("undo").addEventListener("click",()=>{ if(!built)return; const last=built.slice(-1); built=built.slice(0,-1);
+    const cand=btns.find(x=>x.disabled&&x.textContent===last); if(cand)cand.disabled=false; render(); });
+  document.getElementById("skip").addEventListener("click",()=>{SFX.click();nextPractice();});
+  document.getElementById("check").addEventListener("click",()=>{
+    const target=w.en.replace(/[^a-zA-Z]/g,"").toLowerCase();
+    const ok=built.toLowerCase()===target;
+    const fb=document.getElementById("spellFb");
+    recordPractice(ok);
+    if(ok){ SFX.correct(); fb.style.color="var(--good)"; fb.innerHTML="✅ 正確！<b>"+w.en+"</b> — "+w.zh; speak(w.en);
+      setTimeout(nextPractice,1400);
+    } else { SFX.wrong(); fb.style.color="var(--bad)"; fb.innerHTML="❌ 再試試。正確拼法是 <b>"+w.en+"</b>。點「退一格」修正，或「下一題」。"; }
+    document.querySelector("#panel-practice .muted") && (document.querySelector("#panel-practice h3").nextElementSibling.textContent="練習正確率 "+accStr());
+  });
+  bindSay(pArea);
+}
+function judgeMC(box,btn,ok,w,why){
+  box.querySelectorAll("button").forEach(b=>b.disabled=true);
+  recordPractice(ok);
+  if(ok){ btn.classList.add("correct"); SFX.correct(); speak(w.en); toast("✅ 答對了！"); }
+  else{ btn.classList.add("wrong"); SFX.wrong();
+    box.querySelectorAll("button").forEach(b=>{ if((b.textContent===w.zh)||(b.querySelector&&b.querySelector("b")&&b.querySelector("b").textContent===w.en)) b.classList.add("correct"); });
+  }
+  const fb=document.createElement("div"); fb.style.marginTop="12px"; fb.style.fontWeight="800";
+  fb.style.color= ok?"var(--good)":"var(--bad)";
+  fb.innerHTML=(ok?"✅ 正確！":"❌ 答錯了。")+" 「<b>"+w.en+"</b>」"+why+' <button class="btn sm" style="margin-left:8px" id="nextP">下一題 ▶</button>';
+  box.parentElement.appendChild(fb);
+  document.getElementById("nextP").addEventListener("click",()=>{SFX.click();nextPractice();});
+}
+function bindSay(scope){ scope.querySelectorAll("[data-say]").forEach(b=>{ if(b._bound)return; b._bound=true; b.addEventListener("click",()=>{SFX.click();speak(b.dataset.say);}); }); }
+
+/* =================== QUIZ =================== */
+let quiz=null;
+document.getElementById("startQuiz").addEventListener("click",()=>{SFX.click();buildQuiz();});
+function buildQuiz(){
+  const pool = state.collected.length>=6 ? learned() : WORDS; // if few learned, use all
+  const qs=[]; const used=new Set();
+  const types=["meaning","listen","fill","tf"];
+  let guard=0;
+  while(qs.length<10 && guard<200){
+    guard++;
+    const w=rand(pool);
+    const type=types[qs.length%types.length];
+    const sig=type+":"+w.en;
+    if(used.has(sig)) continue; used.add(sig);
+    qs.push(makeQ(type,w,pool));
+  }
+  quiz={qs, i:0, correct:0, answers:[]};
+  document.getElementById("quizIntro").style.display="none";
+  const qa=document.getElementById("quizArea"); qa.style.display="block";
+  renderQ();
+}
+function makeQ(type,w,pool){
+  if(type==="meaning"){
+    const opts=shuffle([w,...sample(pool,3,w)]);
+    return {type,w,prompt:'「<b style="color:var(--brand);font-size:1.3rem">'+w.en+'</b>」'+w.kk+' 的意思是？',say:w.en,
+      opts:opts.map(o=>({label:o.zh, ok:o.en===w.en})), explain:w.en+" = "+w.zh};
+  }
+  if(type==="listen"){
+    const opts=shuffle([w,...sample(pool,3,w)]);
+    return {type,w,prompt:'👂 點喇叭聽發音，選出正確單字：',say:w.en,playNow:true,
+      opts:opts.map(o=>({label:o.en+"（"+o.zh+"）", ok:o.en===w.en})), explain:"聽到的是 "+w.en+"（"+w.zh+"）"};
+  }
+  if(type==="fill"){
+    const blanked=w.ex.replace(new RegExp("\\b"+w.en.replace(/[-]/g,"\\-")+"\\b","i"),"_____");
+    const opts=shuffle([w,...sample(pool,3,w)]);
+    return {type,w,prompt:'選出最適合填入空格的字：<div class="ex" style="margin-top:8px">"'+blanked+'"<div class="cn">'+w.exZh+'</div></div>',
+      opts:opts.map(o=>({label:o.en, ok:o.en===w.en})), explain:'正解 '+w.en+"：\""+w.ex+"\""};
+  }
+  // tf
+  const wrong=rand(pool.filter(x=>x!==w))||w;
+  const asTrue=Math.random()<0.5;
+  const shownZh = asTrue? w.zh : wrong.zh;
+  return {type,w,prompt:'是非題：<b>'+w.en+'</b> 的意思是「'+shownZh+'」。',say:w.en,
+    opts:[{label:"⭕ 正確",ok:asTrue},{label:"❌ 錯誤",ok:!asTrue}],
+    explain: w.en+" 的正確意思是「"+w.zh+"」"};
+}
+function renderQ(){
+  const qa=document.getElementById("quizArea"); const q=quiz.qs[quiz.i];
+  qa.innerHTML=
+    '<div class="row" style="justify-content:space-between"><b>第 '+(quiz.i+1)+' / '+quiz.qs.length+' 題</b>'+
+      '<span class="pill" style="background:var(--blue)">目前答對 '+quiz.correct+'</span></div>'+
+    '<div class="bar" style="margin:8px 0"><i style="width:'+(quiz.i/quiz.qs.length*100)+'%"></i></div>'+
+    '<div style="font-size:1.2rem;margin:10px 0">'+q.prompt+'</div>'+
+    (q.say?'<button class="btn blue sm" data-say="'+esc(q.say)+'">🔊 播放發音</button>':'')+
+    '<div class="grid-opts" id="qopts"></div>';
+  const box=document.getElementById("qopts");
+  q.opts.forEach(o=>{
+    const b=document.createElement("button"); b.className="opt"; b.innerHTML=o.label;
+    b.addEventListener("click",()=>answerQ(box,b,o.ok,q));
+    box.appendChild(b);
+  });
+  bindSay(qa);
+  if(q.playNow) setTimeout(()=>speak(q.say),350);
+}
+function answerQ(box,btn,ok,q){
+  box.querySelectorAll("button").forEach(b=>b.disabled=true);
+  if(ok){ btn.classList.add("correct"); quiz.correct++; SFX.correct(); }
+  else{ btn.classList.add("wrong"); SFX.wrong();
+    box.querySelectorAll("button").forEach(b=>{ q.opts.forEach(o=>{ if(o.ok && b.innerHTML===o.label) b.classList.add("correct"); }); }); }
+  quiz.answers.push({en:q.w.en, ok, explain:q.explain});
+  const fb=document.createElement("div"); fb.style.marginTop="12px"; fb.style.fontWeight="800";
+  fb.style.color=ok?"var(--good)":"var(--bad)";
+  fb.innerHTML=(ok?"✅ 答對！":"❌ 答錯。")+" 💡 "+q.explain+
+    ' <button class="btn sm" style="margin-left:8px" id="nq">'+(quiz.i<quiz.qs.length-1?"下一題 ▶":"看成績 🏁")+'</button>';
+  box.parentElement.appendChild(fb);
+  document.getElementById("nq").addEventListener("click",()=>{ SFX.click(); quiz.i++; if(quiz.i<quiz.qs.length) renderQ(); else finishQuiz(); });
+}
+function finishQuiz(){
+  const score=quiz.correct, total=quiz.qs.length;
+  const best = state.quiz.bestScore||0;
+  if(score>best) state.quiz.bestScore=score;
+  state.quiz.attempts.unshift({score,total,date:Date.now()});
+  state.quiz.attempts=state.quiz.attempts.slice(0,10);
+  logAct("完成測驗，答對 <b>"+score+"/"+total+"</b>");
+  save();
+  if(score===total) SFX.win(); else if(score>=total*0.6) SFX.correct(); else SFX.wrong();
+  const pct=Math.round(score/total*100);
+  const msg = pct===100?"滿分！運動英語冠軍 🏆" : pct>=80?"很棒！再拼滿分 💪" : pct>=60?"及格囉，繼續加油 🔥" : "多探索與練習會更好 📖";
+  const qa=document.getElementById("quizArea");
+  qa.innerHTML=
+    '<div style="text-align:center">'+
+    '<div style="font-size:3rem;font-weight:900;color:var(--brand)">'+score+' / '+total+'</div>'+
+    '<div style="font-size:1.3rem;font-weight:800">'+msg+'</div>'+
+    '<div class="muted">最佳成績：'+state.quiz.bestScore+' / '+total+'</div></div>'+
+    '<h3 style="margin-top:16px">📋 答題詳解</h3><div class="log" style="max-height:300px">'+
+    quiz.answers.map((a,i)=>'<div>'+(a.ok?"✅":"❌")+' 第'+(i+1)+'題 <b>'+a.en+'</b>｜'+a.explain+'</div>').join("")+'</div>'+
+    '<div class="row" style="margin-top:14px;justify-content:center">'+
+      '<button class="btn" id="retry">🔁 再測一次</button>'+
+      '<button class="btn ghost" id="toRecord">看學習歷程 📊</button></div>';
+  document.getElementById("retry").addEventListener("click",()=>{SFX.click();buildQuiz();});
+  document.getElementById("toRecord").addEventListener("click",()=>{document.querySelector('[data-tab="record"]').click();});
+}
+
+/* =================== RECORD =================== */
+function renderRecord(){
+  const box=document.getElementById("statBox");
+  const acc = state.practice.attempts? Math.round(state.practice.correct/state.practice.attempts*100)+"%":"—";
+  box.innerHTML=
+    stat(state.collected.length+" / "+WORDS.length,"已學單字")+
+    stat(acc,"練習正確率")+
+    stat((state.quiz.bestScore||0)+" / 10","測驗最佳")+
+    stat(state.quiz.attempts.length,"測驗次數");
+  const log=document.getElementById("activityLog");
+  log.innerHTML = state.activity.length? state.activity.map(a=>'<div>🕒 '+fmt(a.t)+"　"+a.txt+"</div>").join("") : '<div class="muted">尚無活動紀錄，快去探索學單字吧！</div>';
+}
+function stat(n,l){ return '<div class="stat"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
+function fmt(t){ const d=new Date(t); const p=x=>String(x).padStart(2,"0"); return (d.getMonth()+1)+"/"+d.getDate()+" "+p(d.getHours())+":"+p(d.getMinutes()); }
+
+/* downloads */
+function download(name, text){
+  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+document.getElementById("dlWords").addEventListener("click",()=>{
+  SFX.click();
+  let t="運動英語單字表（Sports English Word List）\n===============================\n\n";
+  ["A","B","C","D"].forEach(z=>{
+    t+="【"+zoneName(z)+"】\n";
+    WORDS.filter(w=>w.zone===z).forEach(w=>{
+      const done=state.collected.includes(w.en)?"[已學]":"[未學]";
+      t+=done+" "+w.en+" "+w.kk+"　"+w.zh+"\n    例句："+w.ex+"\n    翻譯："+w.exZh+"\n    小撇步："+w.tip+"\n\n";
+    });
+  });
+  download("運動英語單字表.txt",t);
+});
+document.getElementById("dlAi").addEventListener("click",()=>{
+  SFX.click();
+  if(!state.aiLog.length){ toast("還沒有 AI 教練紀錄可下載"); return; }
+  let t="AI 英文教練對話紀錄\n=================\n\n";
+  state.aiLog.forEach(x=>{ t+="[ "+fmt(x.t)+" ] 單字："+x.word+"\n你問："+x.q+"\n教練："+x.a+"\n\n----------------\n\n"; });
+  download("AI教練紀錄.txt",t);
+});
+document.getElementById("dlProgress").addEventListener("click",()=>{
+  SFX.click();
+  const acc = state.practice.attempts? Math.round(state.practice.correct/state.practice.attempts*100)+"%":"—";
+  let t="運動英語學習歷程\n===============\n產出時間："+fmt(Date.now())+"\n\n";
+  t+="已學單字："+state.collected.length+" / "+WORDS.length+"\n"+"（"+state.collected.join(", ")+"）\n\n";
+  t+="練習：作答 "+state.practice.attempts+" 題，答對 "+state.practice.correct+" 題，正確率 "+acc+"\n\n";
+  t+="測驗最佳成績："+(state.quiz.bestScore||0)+" / 10\n測驗次數："+state.quiz.attempts.length+"\n";
+  state.quiz.attempts.forEach(a=>{ t+="  - "+fmt(a.date)+"　"+a.score+"/"+a.total+"\n"; });
+  t+="\n最近活動：\n"; state.activity.forEach(a=>{ t+="  "+fmt(a.t)+"　"+a.txt.replace(/<[^>]+>/g,"")+"\n"; });
+  download("學習歷程.txt",t);
+});
+document.getElementById("resetAll").addEventListener("click",()=>{
+  if(confirm("確定要清除本機所有學習紀錄嗎？此動作無法復原。")){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    state=structuredClone(DEFAULT);
+    placeTokens(); renderRecord(); px=50;py=50;playerEl.style.left="50%";playerEl.style.top="50%";
+    toast("已清除所有紀錄"); SFX.click();
+  }
+});
+
+/* =================== AI COACH (local, offline) =================== */
+const aiSel=document.getElementById("aiWord");
+WORDS.forEach(w=>{ const o=document.createElement("option"); o.value=w.en; o.textContent=w.en+"（"+w.zh+"）"; aiSel.appendChild(o); });
+let lastAi={q:"",a:"",word:""};
+function coachReply(word, intent, rawQ){
+  const w=byEn[word]; if(!w) return "請先選一個單字喔！";
+  const enc=["加油！","你做得到！","一步一步來，一定會進步！","運動員的堅持，用在學英文也一樣有效！"];
+  const cheer=enc[Math.floor(Math.random()*enc.length)];
+  if(intent==="meaning")
+    return "📖 「"+w.en+"」"+w.kk+" 的意思是「"+w.zh+"」，屬於"+zoneName(w.zone)+"的常用字。\n\n例句："+w.ex+"\n（"+w.exZh+"）\n\n"+cheer;
+  if(intent==="pron")
+    return "🔊 「"+w.en+"」的發音是 "+w.kk+"。\n點右上角喇叭或下方「唸出回覆」可以反覆聽。\n\n跟著唸三次，注意重音節，很快就記住了。"+cheer;
+  if(intent==="example")
+    return "✍️ 用「"+w.en+"」造句：\n"+w.ex+"\n（"+w.exZh+"）\n\n換你試試看，把 "+w.en+" 放進你自己的運動情境裡！"+cheer;
+  if(intent==="memory")
+    return "💡 記憶小撇步：\n"+w.tip+"\n\n「"+w.en+"」＝「"+w.zh+"」。搭配動作邊做邊唸，肌肉記憶會幫你記得更牢！";
+  if(intent==="use")
+    return "🏃 在"+zoneName(w.zone)+"時可以這樣用：\n"+w.ex+"\n（"+w.exZh+"）\n\n下次上體育課，試著用英文喊出「"+w.en+"」，把單字變成你的口令！"+cheer;
+  // free text: keyword routing
+  const q=(rawQ||"").toLowerCase();
+  if(/意思|mean|什麼字|中文/.test(q)) return coachReply(word,"meaning");
+  if(/發音|怎麼唸|怎麼念|唸|念|pron|say/.test(q)) return coachReply(word,"pron");
+  if(/造句|例句|句子|example|sentence/.test(q)) return coachReply(word,"example");
+  if(/記|背|memor|忘/.test(q)) return coachReply(word,"memory");
+  if(/用|use|運動|情境/.test(q)) return coachReply(word,"use");
+  // default full summary
+  return "🤖 關於「"+w.en+"」"+w.kk+"（"+w.zh+"）：\n\n• 意思："+w.zh+"，是"+zoneName(w.zone)+"的字\n• 例句："+w.ex+"\n  （"+w.exZh+"）\n• 記憶："+w.tip+"\n\n想更深入可以按上方按鈕問我發音、造句或用法。"+cheer;
+}
+function showAi(word, text, q){
+  const bubble=document.getElementById("aiReply");
+  bubble.style.display="block";
+  bubble.innerHTML = text.split("\n").map(line=>{
+    // highlight lines that are mostly English (example sentences)
+    if(/[A-Za-z].*[A-Za-z]/.test(line) && !/[\u4e00-\u9fff]/.test(line.replace(/[（(].*[)）]/,"")) )
+      return '<span class="en-line">'+esc(line)+'</span>';
+    return esc(line);
+  }).join("\n");
+  document.getElementById("aiActions").style.display="flex";
+  lastAi={q:q||"", a:text, word};
+}
+document.querySelectorAll("[data-ask]").forEach(b=>b.addEventListener("click",()=>{
+  SFX.click(); const w=aiSel.value; const intent=b.dataset.ask;
+  const text=coachReply(w,intent); showAi(w,text,b.textContent);
+}));
+document.getElementById("aiSend").addEventListener("click",()=>{
+  SFX.click(); const w=aiSel.value; const q=document.getElementById("aiInput").value.trim();
+  if(!q){ toast("先輸入你的問題，或按上方快速按鈕"); return; }
+  showAi(w, coachReply(w,"free",q), q); document.getElementById("aiInput").value="";
+});
+document.getElementById("aiInput").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("aiSend").click(); });
+document.getElementById("aiSpeakWord").addEventListener("click",()=>{SFX.click();speak(aiSel.value);});
+document.getElementById("aiSpeakReply").addEventListener("click",()=>{
+  SFX.click();
+  // read English sentences from the reply for pronunciation practice
+  const enLines=(lastAi.a.match(/[A-Za-z][A-Za-z ,.'\-?!]{3,}/g)||[]).filter(s=>/\s/.test(s));
+  speak(enLines.length? enLines.join(". ") : aiSel.value);
+});
+document.getElementById("aiSave").addEventListener("click",()=>{
+  if(!lastAi.a){ toast("還沒有可儲存的回覆"); return; }
+  state.aiLog.unshift({t:Date.now(), word:lastAi.word, q:lastAi.q, a:lastAi.a});
+  state.aiLog=state.aiLog.slice(0,50);
+  logAct("向 AI 教練請教了 <b>"+lastAi.word+"</b>");
+  save(); toast("✅ 已存進紀錄，可到學習歷程下載"); SFX.click();
+});
+
+/* =================== UTIL =================== */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+/* =================== INIT =================== */
+placeTokens();
+playerEl.style.left="50%"; playerEl.style.top="50%";
+requestAnimationFrame(gameLoop);
+renderRecord();
+// resume audio context on first interaction (autoplay policy)
+window.addEventListener("pointerdown",()=>{ const c=AC(); if(c&&c.state==="suspended") c.resume(); },{once:true});
+</script>
+</body>
+</html>
